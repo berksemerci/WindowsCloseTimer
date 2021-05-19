@@ -29,8 +29,34 @@ namespace WindowsCloseTimer
         {
             this.BackColor = Color.FromArgb(0, 0, 0);
             TransparencyKey = Color.FromArgb(0, 0, 0);
+            TransparetBackground(close_lbl); // Delete the color behind the close app button
+            TransparetBackground(hide_lbl); // Delete the color behind the hide app button
         }
 
+          // - Start - background deletion - Start -
+          
+        void TransparetBackground(Control C)
+        {
+            C.Visible = false;
+
+            C.Refresh();
+            Application.DoEvents();
+
+            Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
+            int titleHeight = screenRectangle.Top - this.Top;
+            int Right = screenRectangle.Left - this.Left;
+
+            Bitmap bmp = new Bitmap(this.Width, this.Height);
+            this.DrawToBitmap(bmp, new Rectangle(0, 0, this.Width, this.Height));
+            Bitmap bmpImage = new Bitmap(bmp);
+            bmp = bmpImage.Clone(new Rectangle(C.Location.X + Right, C.Location.Y + titleHeight, C.Width, C.Height), bmpImage.PixelFormat);
+            C.BackgroundImage = bmp;
+
+            C.Visible = true;
+        }
+    
+         // - End - background deletion - End -
+    
         private void hide_lbl_Click(object sender, EventArgs e)
         {
             this.Hide();
